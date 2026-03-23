@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EcoGuard Control Interface</title>
+  <style>
+    :root {
+      --bg: #f4f7f5;
+      --panel: #ffffff;
+      --panel-2: #eef5ef;
+      --text: #1f2a24;
+      --muted: #66746b;
+      --accent: #3d8b5a;
+      --accent-2: #dfeee4;
+      --line: #d8e3db;
+      --danger: #d9534f;
+      --warn: #e6a23c;
+      --ok: #42a56d;
+      --shadow: 0 14px 36px rgba(31, 42, 36, 0.08);
+      --radius: 22px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(180deg, #f7faf8 0%, #edf4ef 100%);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    button, input {
+      font: inherit;
+    }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+    }
+
+    .sidebar {
+      background: rgba(255,255,255,0.8);
+      backdrop-filter: blur(10px);
+      border-right: 1px solid var(--line);
+      padding: 24px 18px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 28px;
+      padding: 8px 10px;
+    }
+
+    .brand-badge {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--accent), #6db488);
+      display: grid;
+      place-items: center;
+      color: white;
+      font-weight: 800;
+      box-shadow: var(--shadow);
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 1.15rem;
+      line-height: 1.1;
+    }
+
+    .brand p {
+      margin: 2px 0 0;
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
+    .menu-label {
+      font-size: 0.78rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin: 18px 12px 8px;
+    }
+
+    .nav {
+      display: grid;
+      gap: 8px;
+    }
+
+    .nav button {
+      border: 0;
+      background: transparent;
+      padding: 14px 14px;
+      border-radius: 16px;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--text);
+      cursor: pointer;
+      transition: .2s ease;
+    }
+
+    .nav button:hover,
+    .nav button.active {
+      background: var(--accent-2);
+      color: var(--accent);
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      opacity: .8;
+    }
+
+    .content {
+      padding: 24px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .search-wrap {
+      flex: 1;
+      min-width: 260px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: var(--shadow);
+    }
+
+    .search-wrap input {
+      border: 0;
+      outline: 0;
+      flex: 1;
+      background: transparent;
+      color: var(--text);
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .pill-btn, .icon-btn {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      color: var(--text);
+      border-radius: 16px;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+    }
+
+    .pill-btn {
+      padding: 12px 16px;
+      font-weight: 600;
+    }
+
+    .icon-btn {
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      font-size: 1rem;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #ffffff, #eef7f0);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      padding: 26px;
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+    }
+
+    .hero h2 {
+      margin: 0 0 8px;
+      font-size: 1.8rem;
+    }
+
+    .hero p {
+      margin: 0;
+      color: var(--muted);
+      max-width: 640px;
+      line-height: 1.55;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      background: #eaf6ee;
+      color: var(--ok);
+      border-radius: 999px;
+      font-weight: 700;
+      margin-top: 14px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 18px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .span-4 { grid-column: span 4; }
+    .span-5 { grid-column: span 5; }
+    .span-6 { grid-column: span 6; }
+    .span-7 { grid-column: span 7; }
+    .span-8 { grid-column: span 8; }
+    .span-12 { grid-column: span 12; }
+
+    .card h3 {
+      margin: 0 0 6px;
+      font-size: 1.02rem;
+    }
+
+    .sub {
+      color: var(--muted);
+      font-size: 0.92rem;
+      margin-bottom: 16px;
+    }
+
+    .metric {
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .mini {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .bars {
+      margin-top: 18px;
+      height: 120px;
+      display: flex;
+      align-items: end;
+      gap: 12px;
+    }
+
+    .bar {
+      flex: 1;
+      background: linear-gradient(180deg, #cde3d4, #84bc98);
+      border-radius: 14px 14px 6px 6px;
+      min-height: 28px;
+    }
+
+    .alert-box {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      padding: 16px;
+      border-radius: 18px;
+      background: #fff9ef;
+      border: 1px solid #f5dfb5;
+    }
+
+    .alert-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: #ffe4bf;
+      color: #a96600;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    .device-list, .report-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .device-item, .report-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 14px 16px;
+      background: var(--panel-2);
+      border-radius: 16px;
+    }
+
+    .tag {
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .tag.ok { background: #e7f5ec; color: var(--ok); }
+    .tag.warn { background: #fff3e2; color: var(--warn); }
+    .tag.off { background: #eef0f1; color: #667; }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .section-title p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .toggle-row {
+      display: grid;
+      gap: 14px;
+    }
+
+    .toggle-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: #fbfdfb;
+    }
+
+    .switch {
+      position: relative;
+      width: 54px;
+      height: 30px;
+      background: #d8e3db;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: .2s ease;
+    }
+
+    .switch::after {
+      content: "";
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      width: 22px;
+      height: 22px;
+      background: white;
+      border-radius: 50%;
+      box-shadow: 0 4px 10px rgba(0,0,0,.15);
+      transition: .2s ease;
+    }
+
+    .switch.active {
+      background: #87c39d;
+    }
+
+    .switch.active::after {
+      left: 28px;
+    }
+
+    .hidden { display: none !important; }
+
+    .footer-note {
+      margin-top: 20px;
+      color: var(--muted);
+      font-size: 0.86rem;
+      text-align: center;
+    }
+
+    @media (max-width: 980px) {
+      .app { grid-template-columns: 1fr; }
+      .sidebar {
+        position: static;
+        height: auto;
+        padding-bottom: 10px;
+      }
+      .grid { grid-template-columns: 1fr; }
+      .span-4, .span-5, .span-6, .span-7, .span-8, .span-12 { grid-column: span 1; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-badge">E</div>
+        <div>
+          <h1>EcoGuard</h1>
+          <p>Smart touchscreen dashboard</p>
+        </div>
+      </div>
+
+      <div class="menu-label">Navigation</div>
+      <nav class="nav" id="nav">
+        <button class="active" data-view="dashboard"><span class="dot"></span> Dashboard</button>
+        <button data-view="energy"><span class="dot"></span> Energy Usage</button>
+        <button data-view="cooling"><span class="dot"></span> Ventilation</button>
+        <button data-view="port"><span class="dot"></span> Charging & Data</button>
+        <button data-view="reports"><span class="dot"></span> Reports</button>
+        <button data-view="settings"><span class="dot"></span> Settings</button>
+      </nav>
+
+      <div class="menu-label">Extra</div>
+      <nav class="nav">
+        <button><span class="dot"></span> Profile</button>
+        <button><span class="dot"></span> Help</button>
+      </nav>
+    </aside>
+
+    <main class="content">
+      <div class="topbar">
+        <div class="search-wrap">
+          <span>🔎</span>
+          <input id="searchInput" type="text" placeholder="Search sections, ports, cooling, dashboard..." />
+        </div>
+        <div class="top-actions">
+          <button class="icon-btn" title="Notifications">🔔</button>
+          <button class="pill-btn">Connect Device</button>
+        </div>
+      </div>
+
+      <section class="hero">
+        <div>
+          <h2>EcoGuard Smart Control Interface</h2>
+          <p>
+            This website acts as the digital interface for the physical EcoGuard enclosure. It presents touchscreen controls, ventilation status, power and data access, and live system monitoring in one clean dashboard.
+          </p>
+          <div class="status-badge">● System Status: Online</div>
+        </div>
+      </section>
+
+      <div id="dashboard" class="view">
+        <div class="grid">
+          <section class="card span-4">
+            <h3>Touchscreen Display</h3>
+            <div class="sub">Primary control and monitoring window</div>
+            <div class="metric">30 × 30 mm</div>
+            <div class="mini">Mounted into the top opening of the enclosure.</div>
+          </section>
+
+          <section class="card span-4">
+            <h3>Ventilation System</h3>
+            <div class="sub">Thermal airflow management</div>
+            <div class="metric">12 Slots</div>
+            <div class="mini">Rectangular vent array placed on the side walls.</div>
+          </section>
+
+          <section class="card span-4">
+            <h3>Charging & Data Port</h3>
+            <div class="sub">Front accessibility</div>
+            <div class="metric">Active</div>
+            <div class="mini">Supports power input and data transfer to the device.</div>
+          </section>
+
+          <section class="card span-7">
+            <div class="section-title">
+              <div>
+                <h3>System Performance Overview</h3>
+                <p>Mock live values for your smart product website.</p>
+              </div>
+            </div>
+            <div class="bars">
+              <div class="bar" style="height:40%"></div>
+              <div class="bar" style="height:56%"></div>
+              <div class="bar" style="height:48%"></div>
+              <div class="bar" style="height:72%"></div>
+              <div class="bar" style="height:64%"></div>
+              <div class="bar" style="height:84%"></div>
+            </div>
+          </section>
+
+          <section class="card span-5">
+            <h3>Safety & Cooling Notice</h3>
+            <div class="sub">Current enclosure health</div>
+            <div class="alert-box">
+              <div class="alert-icon">!</div>
+              <div>
+                <strong>Ventilation operating normally</strong>
+                <div class="mini" style="margin-top:6px;">No overheating detected. Airflow path is open and functional.</div>
+              </div>
+            </div>
+          </section>
+
+          <section class="card span-6">
+            <div class="section-title">
+              <div>
+                <h3>Physical Features</h3>
+                <p>Mapped from your Fusion 360 enclosure.</p>
+              </div>
+            </div>
+            <div class="device-list">
+              <div class="device-item"><span>Touchscreen Display Opening</span><span class="tag ok">Ready</span></div>
+              <div class="device-item"><span>Charging & Data Port</span><span class="tag ok">Connected</span></div>
+              <div class="device-item"><span>Ventilation Slots</span><span class="tag ok">Open</span></div>
+              <div class="device-item"><span>Filleted Edges</span><span class="tag ok">Applied</span></div>
+            </div>
+          </section>
+
+          <section class="card span-6">
+            <div class="section-title">
+              <div>
+                <h3>Control Options</h3>
+                <p>Digital controls that later connect to the physical product.</p>
+              </div>
+            </div>
+            <div class="toggle-row">
+              <div class="toggle-card">
+                <div>
+                  <strong>Cooling Monitor</strong>
+                  <div class="mini">Track temperature and airflow status.</div>
+                </div>
+                <div class="switch active"></div>
+              </div>
+              <div class="toggle-card">
+                <div>
+                  <strong>Power Link</strong>
+                  <div class="mini">Simulated connection through the charging/data port.</div>
+                </div>
+                <div class="switch active"></div>
+              </div>
+              <div class="toggle-card">
+                <div>
+                  <strong>Touchscreen Sync</strong>
+                  <div class="mini">Simulates the touchscreen pairing with the website.</div>
+                </div>
+                <div class="switch"></div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <div id="energy" class="view hidden">
+        <div class="grid">
+          <section class="card span-8">
+            <h3>Power & Port Monitoring</h3>
+            <div class="sub">Charging and data flow interface for the physical product.</div>
+            <div class="metric">5.0 V Input</div>
+            <div class="mini">Stable power detected through the front charging/data opening.</div>
+          </section>
+          <section class="card span-4">
+            <h3>Status</h3>
+            <div class="device-list">
+              <div class="device-item"><span>USB Power</span><span class="tag ok">Live</span></div>
+              <div class="device-item"><span>Data Link</span><span class="tag warn">Simulated</span></div>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <div id="cooling" class="view hidden">
+        <div class="grid">
+          <section class="card span-7">
+            <h3>Ventilation Slot System</h3>
+            <div class="sub">Rectangular vent layout for airflow and cooling.</div>
+            <div class="mini">The side slots were intentionally designed in parallel rows to increase airflow while maintaining a clean premium appearance.</div>
+            <div class="bars">
+              <div class="bar" style="height:55%"></div>
+              <div class="bar" style="height:62%"></div>
+              <div class="bar" style="height:74%"></div>
+              <div class="bar" style="height:79%"></div>
+              <div class="bar" style="height:68%"></div>
+              <div class="bar" style="height:71%"></div>
+            </div>
+          </section>
+          <section class="card span-5">
+            <h3>Cooling Summary</h3>
+            <div class="device-list">
+              <div class="device-item"><span>Airflow Path</span><span class="tag ok">Clear</span></div>
+              <div class="device-item"><span>Heat Release</span><span class="tag ok">Balanced</span></div>
+              <div class="device-item"><span>Vent Density</span><span class="tag ok">Optimized</span></div>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <div id="port" class="view hidden">
+        <div class="grid">
+          <section class="card span-6">
+            <h3>Front Access Port</h3>
+            <div class="sub">Used for charging and electrical/data cable routing.</div>
+            <div class="metric">1 Port</div>
+            <div class="mini">Designed on the front face for convenient cable access.</div>
+          </section>
+          <section class="card span-6">
+            <h3>Connection Details</h3>
+            <div class="report-list">
+              <div class="report-item"><span>Charging Support</span><span class="tag ok">Enabled</span></div>
+              <div class="report-item"><span>Data Output</span><span class="tag ok">Enabled</span></div>
+              <div class="report-item"><span>Placement Accessibility</span><span class="tag ok">High</span></div>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <div id="reports" class="view hidden">
+        <div class="grid">
+          <section class="card span-12">
+            <h3>Design Summary Report</h3>
+            <div class="sub">Use this section to explain your final product in your portfolio.</div>
+            <p class="mini" style="line-height:1.7; font-size:0.98rem; color:var(--text);">
+              EcoGuard is a smart touchscreen enclosure designed to protect internal electronics while providing a premium user interface. The top opening is dedicated to a touchscreen display, the side vents improve cooling and airflow, and the front port supports charging and data transfer. Filleted edges improve safety and aesthetics, creating a smoother and more realistic consumer product design.
+            </p>
+          </section>
+        </div>
+      </div>
+
+      <div id="settings" class="view hidden">
+        <div class="grid">
+          <section class="card span-12">
+            <h3>Website Settings</h3>
+            <div class="sub">Mock controls for the GitHub-hosted interface.</div>
+            <div class="toggle-row">
+              <div class="toggle-card"><span>Dark Mode</span><div class="switch" id="themeSwitch"></div></div>
+              <div class="toggle-card"><span>Touchscreen Animation Preview</span><div class="switch active"></div></div>
+              <div class="toggle-card"><span>Connection Simulation</span><div class="switch active"></div></div>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <div class="footer-note">Built as the digital interface for the EcoGuard physical product prototype.</div>
+    </main>
+  </div>
+
+  <script>
+    const navButtons = document.querySelectorAll('#nav button');
+    const views = document.querySelectorAll('.view');
+    const searchInput = document.getElementById('searchInput');
+    const themeSwitch = document.getElementById('themeSwitch');
+
+    navButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        navButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const target = btn.dataset.view;
+        views.forEach(view => view.classList.add('hidden'));
+        document.getElementById(target).classList.remove('hidden');
+      });
+    });
+
+    document.querySelectorAll('.switch').forEach(sw => {
+      sw.addEventListener('click', () => sw.classList.toggle('active'));
+    });
+
+    themeSwitch.addEventListener('click', () => {
+      const root = document.documentElement;
+      const dark = root.dataset.theme === 'dark';
+      if (!dark) {
+        root.dataset.theme = 'dark';
+        root.style.setProperty('--bg', '#0f1512');
+        root.style.setProperty('--panel', '#18211c');
+        root.style.setProperty('--panel-2', '#202b24');
+        root.style.setProperty('--text', '#edf5ef');
+        root.style.setProperty('--muted', '#aac0b1');
+        root.style.setProperty('--accent-2', '#22352a');
+        root.style.setProperty('--line', '#2b3a31');
+        document.body.style.background = 'linear-gradient(180deg, #101612 0%, #0c110e 100%)';
+      } else {
+        root.dataset.theme = '';
+        location.reload();
+      }
+      themeSwitch.classList.toggle('active');
+    });
+
+    searchInput.addEventListener('input', () => {
+      const q = searchInput.value.trim().toLowerCase();
+      if (!q) return;
+      const match = Array.from(navButtons).find(btn => btn.textContent.toLowerCase().includes(q));
+      if (match) match.click();
+    });
+  </script>
+</body>
+</html>
