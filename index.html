@@ -7,8 +7,39 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <!-- LOGIN OVERLAY -->
+  <div id="loginOverlay" class="login-overlay">
+    <div class="login-card">
+      <h1>EcoGuard</h1>
+      <p class="login-subtext">
+        Sign in to access your smart monitoring dashboard.
+      </p>
+
+      <div class="login-actions">
+        <button id="googleLoginBtn" class="primary-btn full-btn">
+          Continue with Google
+        </button>
+
+        <div class="divider">or</div>
+
+        <form id="emailLoginForm" class="email-form">
+          <label for="emailInput">Email Address</label>
+          <input id="emailInput" type="email" placeholder="Enter your Gmail address" required />
+          <button type="submit" class="secondary-btn full-btn">
+            Continue with Email
+          </button>
+        </form>
+
+        <p class="login-note">
+          Demo mode: this version gates access with an email step.  
+          Real Gmail OTP / code verification needs Firebase or a backend service.
+        </p>
+      </div>
+    </div>
+  </div>
+
   <div class="app-shell">
-    <aside class="sidebar">
+    <aside class="sidebar" id="sidebar">
       <div class="logo-row">
         <div class="logo-icon">E</div>
         <div class="logo-text">EcoGuard</div>
@@ -24,18 +55,32 @@
           <span class="nav-icon">🏠</span>
           <span>Home</span>
         </button>
+
         <button class="nav-item" data-page="cost">
           <span class="nav-icon">💰</span>
           <span>Cost Projection</span>
         </button>
+
         <button class="nav-item" data-page="impact">
           <span class="nav-icon">🌿</span>
           <span>Environmental Impact</span>
         </button>
+
+        <button class="nav-item" data-page="alerts">
+          <span class="nav-icon">🔔</span>
+          <span>Alerts</span>
+        </button>
+
+        <button class="nav-item" data-page="profile">
+          <span class="nav-icon">👤</span>
+          <span>Profile</span>
+        </button>
+
         <button class="nav-item" data-page="settings">
           <span class="nav-icon">⚙️</span>
           <span>Settings</span>
         </button>
+
         <button class="nav-item" data-page="logout">
           <span class="nav-icon">↩</span>
           <span>Log Out</span>
@@ -45,131 +90,298 @@
 
     <main class="main-content">
       <header class="topbar">
-        <button class="hamburger" id="menuToggle">☰</button>
-
+        <button class="hamburger" id="menuToggle" title="Open Menu">☰</button>
         <div class="brand-inline">EcoGuard</div>
 
         <div class="top-icons">
-          <button class="icon-btn" title="Notifications">ⓘ</button>
-          <button class="icon-btn" title="Battery">▱</button>
+          <button class="icon-btn" id="topAlertsBtn" title="Alerts">🔔</button>
+          <button class="icon-btn" id="topProfileBtn" title="Profile">👤</button>
         </div>
       </header>
 
       <div class="top-search">
         <span class="search-icon">⌕</span>
-        <input type="text" id="topSearch" placeholder="Search..." />
-        <button class="profile-btn" title="Profile">👤</button>
+        <input type="text" id="topSearch" placeholder="Search sections..." />
+        <button class="profile-btn" id="topSettingsBtn" title="Settings">⚙️</button>
       </div>
 
+      <!-- HOME -->
       <section id="homePage" class="page active-page">
-        <div class="dashboard-grid">
-          <article class="card energy-card">
-            <div class="card-top">
-              <div class="card-title">
-                <span class="emoji">⚡</span>
-                <span>Energy</span>
+        <div class="home-layout">
+          <div class="home-left">
+            <div class="dashboard-grid">
+              <article class="card energy-card">
+                <div class="card-top">
+                  <div class="card-title">
+                    <span class="emoji">⚡</span>
+                    <span>Energy</span>
+                  </div>
+                  <button class="card-menu">⋮</button>
+                </div>
+
+                <div class="main-metric">2.4 <span>kWh</span></div>
+                <div class="sub-metric">↘ 5% this week</div>
+
+                <div class="mini-chart">
+                  <div class="bar h1"></div>
+                  <div class="bar h2"></div>
+                  <div class="bar h3"></div>
+                  <div class="bar h4"></div>
+                </div>
+              </article>
+
+              <article class="card water-card">
+                <div class="card-top">
+                  <div class="card-title">
+                    <span class="emoji">💧</span>
+                    <span>Water</span>
+                  </div>
+                  <button class="card-menu">⋮</button>
+                </div>
+
+                <div class="main-metric">58 <span>L</span></div>
+                <div class="sub-metric">↑ 12% this week</div>
+
+                <div class="mini-chart blue-chart">
+                  <div class="bar h2"></div>
+                  <div class="bar h3"></div>
+                  <div class="bar h4"></div>
+                  <div class="bar h2"></div>
+                </div>
+              </article>
+
+              <article class="card safety-card">
+                <div class="card-top">
+                  <div class="card-title">
+                    <span class="emoji">⚠</span>
+                    <span>Safety</span>
+                  </div>
+                  <button class="card-menu">⋮</button>
+                </div>
+
+                <div class="safety-main">2 new alerts</div>
+                <div class="alert-box">
+                  <div class="alert-dot">⛔</div>
+                  <div>
+                    <div class="alert-title">Gas Leak Detected!</div>
+                    <div class="alert-text">Please check your kitchen</div>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </div>
+
+          <div class="home-right">
+            <section class="content-panel quick-panel">
+              <h2>Quick Overview</h2>
+              <p>
+                This panel summarizes the most important information from the smart monitoring system so users can understand their usage quickly.
+              </p>
+
+              <div class="quick-stats">
+                <div class="quick-box">
+                  <h3>Today’s Peak Use</h3>
+                  <p>Air Conditioner used the highest energy between 2 PM and 5 PM.</p>
+                </div>
+                <div class="quick-box">
+                  <h3>Water Pattern</h3>
+                  <p>Water consumption increased mainly during kitchen and bathroom usage.</p>
+                </div>
+                <div class="quick-box">
+                  <h3>Suggested Action</h3>
+                  <p>Turn off unused cooling appliances and reduce shower time for better efficiency.</p>
+                </div>
               </div>
-              <button class="card-menu">⋮</button>
-            </div>
+            </section>
 
-            <div class="main-metric">2.4 <span>kWh</span></div>
-            <div class="sub-metric">↘ 5% this week</div>
-
-            <div class="mini-chart">
-              <div class="bar h1"></div>
-              <div class="bar h2"></div>
-              <div class="bar h3"></div>
-              <div class="bar h4"></div>
-            </div>
-          </article>
-
-          <article class="card water-card">
-            <div class="card-top">
-              <div class="card-title">
-                <span class="emoji">💧</span>
-                <span>Water</span>
+            <section class="content-panel appliance-panel">
+              <h2>Appliance Consumption Snapshot</h2>
+              <div class="appliance-list">
+                <div class="appliance-row">
+                  <span>Air Conditioner</span>
+                  <span>32%</span>
+                </div>
+                <div class="appliance-row">
+                  <span>Water Heater</span>
+                  <span>21%</span>
+                </div>
+                <div class="appliance-row">
+                  <span>Lighting</span>
+                  <span>14%</span>
+                </div>
+                <div class="appliance-row">
+                  <span>Refrigerator</span>
+                  <span>18%</span>
+                </div>
+                <div class="appliance-row">
+                  <span>Other Devices</span>
+                  <span>15%</span>
+                </div>
               </div>
-              <button class="card-menu">⋮</button>
-            </div>
-
-            <div class="main-metric">58 <span>L</span></div>
-            <div class="sub-metric">↑ 12% this week</div>
-
-            <div class="mini-chart blue-chart">
-              <div class="bar h2"></div>
-              <div class="bar h3"></div>
-              <div class="bar h4"></div>
-              <div class="bar h2"></div>
-            </div>
-          </article>
-
-          <article class="card safety-card">
-            <div class="card-top">
-              <div class="card-title">
-                <span class="emoji">⚠</span>
-                <span>Safety</span>
-              </div>
-              <button class="card-menu">⋮</button>
-            </div>
-
-            <div class="safety-main">2 new alerts</div>
-            <div class="alert-box">
-              <div class="alert-dot">⛔</div>
-              <div>
-                <div class="alert-title">Gas Leak Detected!</div>
-                <div class="alert-text">Please check your kitchen</div>
-              </div>
-            </div>
-          </article>
+            </section>
+          </div>
         </div>
       </section>
 
+      <!-- COST -->
       <section id="costPage" class="page">
-        <div class="content-panel">
+        <div class="content-panel wide-panel">
           <h2>Cost Projection</h2>
-          <p>Estimated monthly cost based on current energy and water usage trends.</p>
+          <p>
+            This page gives a broader estimate of current and future household utility spending and shows which appliances contribute the most to consumption.
+          </p>
 
           <div class="info-grid">
             <div class="info-box">
-              <h3>Electricity</h3>
-              <p>₹1,850 projected this month</p>
+              <h3>Electricity Estimate</h3>
+              <p>₹1,850 projected for this month based on current trends.</p>
             </div>
             <div class="info-box">
-              <h3>Water</h3>
-              <p>₹620 projected this month</p>
+              <h3>Water Estimate</h3>
+              <p>₹620 projected for this month based on current usage patterns.</p>
             </div>
             <div class="info-box">
-              <h3>Total</h3>
-              <p>₹2,470 projected this month</p>
+              <h3>Total Estimate</h3>
+              <p>₹2,470 combined monthly projection.</p>
+            </div>
+          </div>
+
+          <div class="cost-sections">
+            <div class="cost-card">
+              <h3>Appliance Resource Consumption</h3>
+              <ul>
+                <li>Air Conditioner – High electricity demand, especially afternoon use</li>
+                <li>Water Heater – Moderate to high power usage during morning hours</li>
+                <li>Lighting – Low to moderate usage depending on time of day</li>
+                <li>Refrigerator – Continuous background consumption</li>
+                <li>Kitchen Appliances – Short bursts of energy use throughout the day</li>
+              </ul>
+            </div>
+
+            <div class="cost-card">
+              <h3>Steps to Reduce Consumption</h3>
+              <ol>
+                <li>Reduce air conditioner runtime during peak heat hours by setting a stable temperature.</li>
+                <li>Use the water heater only when necessary instead of leaving it active continuously.</li>
+                <li>Switch off lights in unoccupied rooms and rely on daylight where possible.</li>
+                <li>Avoid opening the refrigerator repeatedly to reduce cooling loss.</li>
+                <li>Turn off standby appliances that continue to draw power when not in use.</li>
+              </ol>
+            </div>
+
+            <div class="cost-card">
+              <h3>Consumption Trend Insight</h3>
+              <p>
+                The largest cost contribution usually comes from cooling and heating systems. Smaller daily improvements in these areas often have the biggest effect on monthly spending.
+              </p>
             </div>
           </div>
         </div>
       </section>
 
+      <!-- IMPACT -->
       <section id="impactPage" class="page">
-        <div class="content-panel">
+        <div class="content-panel wide-panel">
           <h2>Environmental Impact</h2>
-          <p>This section helps users track their sustainability performance.</p>
+          <p>
+            This section explains how changes in appliance usage and utility consumption affect sustainability, energy efficiency, and long-term environmental performance.
+          </p>
 
           <div class="info-grid">
             <div class="info-box">
-              <h3>Energy Saved</h3>
-              <p>12% lower than last week</p>
+              <h3>Reduced Energy Usage</h3>
+              <p>12% lower than last week due to more controlled cooling usage.</p>
             </div>
             <div class="info-box">
-              <h3>Water Saved</h3>
-              <p>8 litres saved today</p>
+              <h3>Reduced Water Usage</h3>
+              <p>8 litres saved today through shorter water-intensive activities.</p>
             </div>
             <div class="info-box">
-              <h3>Eco Status</h3>
-              <p>Moderately efficient usage pattern</p>
+              <h3>Efficiency Status</h3>
+              <p>Current usage is moderately efficient, with room for improvement in heating and cooling appliances.</p>
+            </div>
+          </div>
+
+          <div class="cost-sections">
+            <div class="cost-card">
+              <h3>Impact of Reduced Appliance Usage</h3>
+              <ul>
+                <li>Less air conditioner use lowers power demand and reduces strain on the electrical system.</li>
+                <li>Reduced water heater use limits unnecessary energy consumption.</li>
+                <li>Turning off standby devices lowers hidden electricity wastage.</li>
+                <li>Using only necessary lighting helps reduce daily load.</li>
+              </ul>
+            </div>
+
+            <div class="cost-card">
+              <h3>Sustainability Insight</h3>
+              <p>
+                Lower household consumption contributes to reduced resource waste and improved overall sustainability. Even small reductions across multiple appliances create measurable benefits over time.
+              </p>
+            </div>
+
+            <div class="cost-card">
+              <h3>Improvement Suggestions</h3>
+              <ol>
+                <li>Shift high-energy appliance usage to shorter time periods.</li>
+                <li>Monitor cooling and heating systems regularly.</li>
+                <li>Use smart scheduling for appliances with repeated daily activity.</li>
+                <li>Continue tracking weekly changes to identify patterns.</li>
+              </ol>
             </div>
           </div>
         </div>
       </section>
 
+      <!-- ALERTS -->
+      <section id="alertsPage" class="page">
+        <div class="content-panel wide-panel">
+          <h2>Alerts</h2>
+          <p>All system warnings, notifications, and active safety messages are shown here.</p>
+
+          <div class="alerts-list">
+            <div class="alert-entry danger">
+              <h3>Gas Leak Detected</h3>
+              <p>Please check your kitchen immediately and inspect the connected gas source.</p>
+            </div>
+            <div class="alert-entry warning">
+              <h3>High Energy Spike</h3>
+              <p>Unusual energy usage detected during the afternoon period.</p>
+            </div>
+            <div class="alert-entry info">
+              <h3>Water Usage Increase</h3>
+              <p>Water consumption today is higher than the recent daily average.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PROFILE -->
+      <section id="profilePage" class="page">
+        <div class="content-panel wide-panel">
+          <h2>Profile</h2>
+          <p>This page shows the current user profile and dashboard preferences.</p>
+
+          <div class="profile-grid">
+            <div class="info-box">
+              <h3>User</h3>
+              <p id="profileEmail">demo.user@gmail.com</p>
+            </div>
+            <div class="info-box">
+              <h3>Device Type</h3>
+              <p>EcoGuard Dashboard Access</p>
+            </div>
+            <div class="info-box">
+              <h3>Preference</h3>
+              <p>Light mode enabled by default</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SETTINGS -->
       <section id="settingsPage" class="page">
-        <div class="content-panel">
+        <div class="content-panel wide-panel">
           <h2>Settings</h2>
           <p>Basic system settings for the smart monitoring dashboard.</p>
 
@@ -185,7 +397,7 @@
             <div class="setting-row">
               <span>Dark Mode</span>
               <label class="switch">
-                <input type="checkbox" />
+                <input type="checkbox" id="darkModeToggle" />
                 <span class="slider"></span>
               </label>
             </div>
@@ -201,10 +413,12 @@
         </div>
       </section>
 
+      <!-- LOGOUT -->
       <section id="logoutPage" class="page">
-        <div class="content-panel">
+        <div class="content-panel wide-panel">
           <h2>Log Out</h2>
-          <p>This is a mock dashboard, so logout is only shown as a UI element.</p>
+          <p>You are about to log out from the EcoGuard dashboard.</p>
+          <button id="confirmLogoutBtn" class="primary-btn">Confirm Log Out</button>
         </div>
       </section>
 
