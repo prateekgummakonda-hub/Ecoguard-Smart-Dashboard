@@ -631,3 +631,30 @@ small {
     max-width: 100%;
   }
 }
+.floating-card-menu {
+  position: absolute;
+  width: 210px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 8px;
+  z-index: 1000;
+}
+
+.floating-card-menu-item {
+  width: 100%;
+  border: none;
+  background: transparent;
+  text-align: left;
+  padding: 12px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  color: var(--text);
+  font-size: 0.95rem;
+}
+
+.floating-card-menu-item:hover {
+  background: var(--green-soft);
+  color: var(--green);
+}
